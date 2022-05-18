@@ -1,0 +1,14 @@
+<%- include("particle/header")-%>
+<div class="container">
+  <form action="/users/register" method="post" class="w-50 border border-dark p-3 m-auto mt-5 text-center">
+    <h2>Register Page</h2>
+    <input type="text" class="w-100 mt-2 border border-dark rounded-3 p-2" name="name" placeholder="Enter the Name">
+    <input type="text" class="w-100 mt-2 border border-dark rounded-3 p-2" name="email" placeholder="Enter the Email" value="<%=remail ? remail:''%>">
+    <input type="text" class="w-100 mt-2 border border-dark rounded-3 p-2" name="password" placeholder="Enter the password">
+    <input type="text" class="w-100 mt-2 border border-dark rounded-3 p-2" name="age" placeholder="Enter the Age">
+    <input type="text" class="w-100 mt-2 border border-dark rounded-3 p-2" name="country" placeholder="Enter the country">
+    <input type="text" class="w-100 mt-2 border border-dark rounded-3 p-2" name="phone" placeholder="Enter the phone">
+    <button type="submit" class="btn btn-primary fw-bolder mt-3">Register</button>
+  </form>
+</div>
+<%- include("particle/footer")-%>

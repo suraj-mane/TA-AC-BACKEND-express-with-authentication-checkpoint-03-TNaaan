@@ -1,0 +1,11 @@
+<%- include("particle/header")-%>
+<div class="container">
+  <form action="/expense/new" method="post" class="w-50 border border-dark p-3 m-auto mt-5 text-center">
+    <h2>Expense Page</h2>
+    <input type="text" class="w-100 mt-2 border border-dark rounded-3 p-2" name="expenseSource" placeholder="Enter the Expense Source">
+    <input type="text" class="w-100 mt-2 border border-dark rounded-3 p-2" name="amount" placeholder="Enter the Amount">
+    <input type="date" class="w-100 mt-2 border border-dark rounded-3 p-2" name="expenseDate" placeholder="Enter the date">
+    <button type="submit" class="btn btn-primary fw-bolder mt-3">Add Expense</button>
+  </form>
+</div>
+<%- include("particle/footer")-%>
