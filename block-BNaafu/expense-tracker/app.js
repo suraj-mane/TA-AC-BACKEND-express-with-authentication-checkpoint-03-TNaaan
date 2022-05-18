@@ -9,12 +9,14 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo');
 var passport = require('passport');
 var auth = require('./middleware/auth');
+var flash = require('connect-flash');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var EmailVerify = require('./routes/EmailVerify');
 var incomeRouter = require('./routes/income');
 var expenseRouter = require("./routes/expense");
+var dashboradRouter = require("./routes/dashboard");
 
 
 require('./modelus/passport');
@@ -42,6 +44,7 @@ saveUninitialized: true,
 store: MongoStore.create({ mongoUrl:'mongodb://localhost/expense'})
 }))
 
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -52,6 +55,7 @@ app.use('/users', usersRouter);
 app.use('/emailverify', EmailVerify);
 app.use('/income', incomeRouter);
 app.use('/expense', expenseRouter);
+app.use('/dashboard', dashboradRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
