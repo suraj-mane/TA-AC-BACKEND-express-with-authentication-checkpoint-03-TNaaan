@@ -4,8 +4,12 @@ var router = express.Router();
 var nodemailer = require('nodemailer');
 var otpGenerator = require('otp-generator');
 var email = require("../credentials/email");
+var EmailOtp = require("../model/emailVerify");
+var moment = require("moment");
 
-var otp = otpGenerator.generate(4, { digits:true, lowerCaseAlphabets:false, upperCaseAlphabets:false,specialChars:false });
+var date = moment(new Date()).format("h");
+
+var otp = otpGenerator.generate(6, { digits:true, lowerCaseAlphabets:false, upperCaseAlphabets:false,specialChars:false });
 
 // Create Transporte 
 
@@ -26,37 +30,51 @@ router.get('/', (req,res,next) => {
 // Send Email
 router.post('/', (req,res,next) => {
   email.verifyedemail = req.body.email;
-  var info = {
-  form:process.env.Email,
-  to:`${req.body.email}`,
-  subject:"OTP verify",
-  html:
-  "<h5>This is your one time password</h5>"+ otp
-  }
-
-  transporter.sendMail(info, (err,info) => {
-    if(err) {
-      console.log(err);
-    } else {
-      res.redirect('/emailverify/verifyotp');
-    }
+  req.body.otp = otp;
+  req.body.otptime = new Date();
+  EmailOtp.create( req.body, (err,data) => {
+    if(err) return next(err);
+    console.log(data);
+    var info = {
+      form:process.env.Email,
+      to:`${req.body.email}`,
+      subject:"OTP verify",
+      html:
+      "<h5>This is your one time password</h5>"+ otp
+      }
+    
+      transporter.sendMail(info, (err,info) => {
+        if(err) {
+          console.log(err);
+        } else {
+          res.redirect("/emailverify/" + data.id + "/verifyotp");
+        }
+      })
   })
 })
 
 // verifyOtp 
 
-router.get('/verifyotp', (req,res,next) => {
-  res.render('verifyOtp')
+router.get('/:id/verifyotp', (req,res,next) => {
+  var id = req.params.id;
+  res.render('verifyOtp',{id})
 })
 
-router.post('/verifyotp', (req,res,next) => {
-  var otp2 = Number(otp);
-  var userOtp = req.body.otp;
-  if(userOtp == otp2){
-    res.redirect('/users/register');
-  } else {
-    res.redirect('/emailverify');
-  }
+router.post('/:id/verifyotp', (req,res,next) => {
+  var userOtp = Number(req.body.otp);
+  var id = req.params.id;
+  EmailOtp.findById(id, (err,user) =>{
+    if(user.otptime){
+    user.otpverify(otp, (err,result) => {
+      if(err) return next(err);
+      if(!result){
+        res.redirect("/emailverify");
+      } else {
+        res.redirect("/users/register");
+      }
+    })
+    }
+  })
 })
 
 module.exports = router;
